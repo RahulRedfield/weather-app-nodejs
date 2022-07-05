@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./style.css">
+
+    <style>
+        html {
+            font-size: 10px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        p {
+            font-size: 1.5rem;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 3em 6em;
+            background-color: skyblue;
+            max-width: fit-content;
+
+            border-radius: 10px;
+            margin: auto auto;
+            overflow: hidden;
+            color: white;
+            box-shadow: 1px 1px 5px gray;
+        }
+
+        .box * {
+            z-index: 20;
+        }
+
+        .wave {
+            background-color: darkcyan;
+            opacity: .5;
+            height: 50vh;
+            width: 50vh;
+            position: absolute;
+            bottom: -30%;
+            z-index: 1;
+        }
+
+        .one {
+            border-radius: 60% 50% 50% 50%/ 50% 50% 50% 50%;
+            opacity: .2;
+            animation: rotate 4s infinite linear;
+        }
+
+        .two {
+            border-radius: 60% 50% 50% 40%/ 50% 60% 50% 50%;
+            opacity: .6;
+            animation: rotate 3s infinite linear;
+        }
+
+        .three {
+            border-radius: 70% 50% 50% 50%/ 50% 50% 70% 50%;
+            opacity: .4;
+            animation: rotate 2s infinite linear;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #weatherIcon {
+            margin: 2em auto;
+            color: lightyellow;
+            animation: scale 3s infinite alternate;
+        }
+
+        @keyframes scale {
+            0% {
+                transform: scale(1.5);
+            }
+
+            100% {
+                transform: scale(3);
+            }
+        }
+
+        .location {
+            color: black;
+        }
+
+        .location-icon {
+            color: red;
+            animation: shift 2s infinite alternate;
+            position: relative;
+        }
+
+        @keyframes shift {
+            0% {
+                transform: translateY(-20%);
+            }
+
+            100% {
+                transform: translateY(0%);
+            }
+        }
+    </style>
+
+    <title>Weather App</title>
+</head>
+
+<body>
+
+    <div class="box">
+        <div class="wave one"></div>
+        <div class="wave two"></div>
+        <div class="wave three"></div>
+
+        <h1 id="weatherIcon">{%condition%}</h1>
+        <p style="color:black; font-weight:bold;">{%description%}</p>
+
+        <div class="info">
+            <h1 class="location"><i class="fa-solid fa-location-dot location-icon"></i> {%cityname%},{%country%}</h1>
+            <p id="time">{%timeValue%}</p>
+            <p id="date">{%dayValue%}</p>
+            <h1 class="temp">{%tempValue%}&deg;C</h1>
+            <p class="tempMinMax">Min:{%tempMinValue%}&deg;C | Max:{%tempMaxValue%}&deg;C</p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const dateEl = document.getElementById("date");
+        const timeEl = document.getElementById("time");
+        const weatherIconEl = document.getElementById("weatherIcon");
+
+        const weatherCondition = "{%condition%}";
+
+        if (weatherCondition === "Sunny") {
+            weatherIconEl.innerHTML = `<i class="fa-solid fa-sun-bright"></i>`;
+        }
+        else if (weatherCondition === "Clouds") {
+            weatherIconEl.innerHTML = `<i class="fa-solid fa-cloud"></i>`;
+        }
+        else if (weatherCondition === "Rainy") {
+            weatherIconEl.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy"></i>`;
+        }
+        else {
+            weatherIconEl.innerHTML = `<i class="fa-solid fa-sun"></i>`;
+        }
+
+
+
+        const getCurrentDate = () => {
+            const date = new Date();
+            const weekdays = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ]
+
+            const months = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December"
+            ]
+
+            const weekday = weekdays[date.getDay()].substring(0, 3);
+            const day = date.getDate();
+            const month = months[date.getMonth() + 1];
+            const year = date.getFullYear();
+            const hour = date.getHours();
+            if (hour > 12) {
+                hour -= 12
+            }
+            const minute = date.getMinutes();
+
+            dateEl.textContent = `${weekday} ${day} | ${month} ${year}`;
+            timeEl.textContent = `${hour < 10 ? "0" + hour : hour}:${minute < 10 ? "0" + minute : minute} ${hour >= 12 ? "PM" : "AM"}`;
+        }
+
+        getCurrentDate();
+
+    </script>
+
+</body>
+
+</html>
